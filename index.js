@@ -61,11 +61,11 @@ app.post("/sendMessage", (req, res) => {
     const data = {
         messaging_product: "whatsapp",
         recipient_type: "individual",
-        to: recipient_phone,
+        to: req.body.message.number,
         type: "text",
         text: { 
         preview_url: false,   
-        body: req.body.message
+        body: req.body.message.message
         }
     }
     
