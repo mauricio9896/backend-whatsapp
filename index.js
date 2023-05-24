@@ -23,6 +23,40 @@ var options = {
 app.use(cors());
 app.use(express.json());
 
+let conversations = [
+  {
+    id: '1',
+    conversacion: [],
+  },
+  {
+    id: '2',
+    conversacion: [],
+  },
+  {
+    id: '3',
+    conversacion: [],
+  },
+  {
+    id: '4',
+    conversacion: [],
+  },
+]
+
+
+function addMessagetoConversation(message){
+  index = conversations.findIndex(conversation => conversation.id == message.id );
+  if(index >= 0){
+    const obj = {
+      emitter: message.emitter,
+      message: message.message,
+      id: message.id,
+      number: message.number,
+    }
+    conversations[index].conversacion.push(obj)
+  }
+  console.log('conversations :>> ', conversations);
+}
+
 app.post("/sendTemplate", (req, res) => {
 
   const obj = JSON.parse(req.body.template);
@@ -50,6 +84,7 @@ app.post("/sendTemplate", (req, res) => {
 
     response.on("end", () => {
       console.log(responseData);
+      addMessagetoConversation(obj);
       res.send(responseData); // Enviar la respuesta al cliente
     });
   });
@@ -84,6 +119,7 @@ app.post("/sendMessage", (req, res) => {
 
     response.on("end", () => {
       console.log(responseData);
+      addMessagetoConversation(req.body);
       res.send(responseData); // Enviar la respuesta al cliente
     });
   });
@@ -150,9 +186,10 @@ app.get("/conversations", (req, res) => {
 app.get("/templates", (req, res) => {
   templates = [
     {
-      id: '1',
+      id: '',
+      id_template: '1',
       name: 'hello_world',
-      number: '573183833578',
+      number: '',
       language: 'en_US',
       components:[
         {
@@ -160,12 +197,14 @@ app.get("/templates", (req, res) => {
           parameters:[]
         }
       ],
-      message: 'Welcome and congratulations!! This message demonstrates your ability to send a WhatsApp message notification from the Cloud API, hosted by Meta. Thank you for taking the time to test with us.'
+      message: 'Welcome and congratulations!! This message demonstrates your ability to send a WhatsApp message notification from the Cloud API, hosted by Meta. Thank you for taking the time to test with us.',
+      emitter : 'user'
     },
     {
-      id: '2',
+      id: '',
+      id_template: '2',
       name: 'first_message_test',
-      number: '573183833578',
+      number: '',
       language: 'es_MX',
       components:[
         {
@@ -173,12 +212,14 @@ app.get("/templates", (req, res) => {
           parameters:[]
         }
       ],
-      message: 'Hola Mauricio , espero te encuentres muy bien Me gustaría felictarte por todo el conocimiento que has estado adquiriendo'
+      message: 'Hola Mauricio , espero te encuentres muy bien Me gustaría felictarte por todo el conocimiento que has estado adquiriendo',
+      emitter : 'user'
     },
     {
-      id: '3',
+      id: '',
+      id_template: '3',
       name: 'second_template',
-      number: '573183833578',
+      number: '',
       language: 'es',
       components:[{
         type: "body",
@@ -197,11 +238,19 @@ app.get("/templates", (req, res) => {
           }
         ]
       }],
-      message: 'hola {{1}} , esta es una plantilla de prueba con variable, {{2}} segunda variable y por ultimo {{3}} tercera variable'
+      message: 'hola {{1}} , esta es una plantilla de prueba con variable, {{2}} segunda variable y por ultimo {{3}} tercera variable',
+      emitter : 'user'
     }
   ];
 
   res.send(templates);
+});
+
+app.get("/conversation/:id",(req, res) => {
+  index = conversations.findIndex(conversation => conversation.id == req.params.id);
+  if(index >= 0){
+    res.send(conversations[index])
+  }
 });
 
 app.listen(3000, () => {
