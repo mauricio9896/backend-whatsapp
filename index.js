@@ -26,18 +26,22 @@ app.use(express.json());
 let conversations = [
   {
     id: '1',
+    number: '573183833578',
     conversacion: [],
   },
   {
     id: '2',
+    number: '573185454867',
     conversacion: [],
   },
   {
     id: '3',
+    number: '',
     conversacion: [],
   },
   {
     id: '4',
+    number: '573114744623',
     conversacion: [],
   },
 ]
@@ -54,7 +58,6 @@ function addMessagetoConversation(message){
     }
     conversations[index].conversacion.push(obj)
   }
-  console.log('conversations :>> ', conversations);
 }
 
 app.post("/sendTemplate", (req, res) => {
@@ -246,7 +249,7 @@ app.get("/templates", (req, res) => {
   res.send(templates);
 });
 
-app.get("/conversation/:id",(req, res) => {
+app.get("/infoUser/:id",(req, res) => {
   index = conversations.findIndex(conversation => conversation.id == req.params.id);
   if(index >= 0){
     res.send(conversations[index])
